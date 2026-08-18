@@ -5,17 +5,53 @@
 - `main` — production-ready code.
 - `staging` — integration branch for work in progress before it goes live.
 
-This repo is brand new — no deployment target, SSH deploy key, or live
-install has been configured yet. See `food-menu-plugin-api`'s original
-`DEVELOPMENT.md` for the pattern to follow once one is chosen (dedicated
-deploy key, distinct SSH config alias, read-only GitHub deploy key on the
-server).
-
 ## Local development
 
 1. Work locally inside this folder.
 2. Commit changes with clear messages.
-3. Push to the appropriate branch on GitHub once a remote exists.
+3. Push to the appropriate branch on GitHub (`staging` for work in progress,
+   `main` for release-ready code).
+
+```bash
+git add <files>
+git commit -m "Describe the change"
+git push origin <branch-name>
+```
+
+## Deploying to tapmytee for testing
+
+This repo is a monorepo (two plugins, one repo), but WordPress needs each
+plugin as its own top-level folder under `wp-content/plugins/`. So instead of
+cloning straight into `wp-content/plugins/` (like `food-menu-plugin` does),
+this repo is cloned into the account home directory and each plugin folder is
+symlinked in:
+
+```bash
+ssh food-menu-deploy
+cd ~/repos/food-menu
+git pull origin staging
+```
+
+The symlinks (`wp-content/plugins/food-menu` and
+`wp-content/plugins/food-menu-pos-sync`, each pointing into
+`~/repos/food-menu/`) only need to be created once — they already exist on
+tapmytee. A `git pull` updates both plugins at once.
+
+`food-menu-deploy` is a dedicated SSH config alias (`~/.ssh/config`, not in
+this repo) using its own deploy key (`id_ed25519_food_menu`) — deliberately
+separate from `food-menu-plugin`'s deploy key, so this project's access can
+be revoked independently later. The server authenticates to GitHub with its
+own read-only deploy key, via a `github.com-food-menu` host alias in the
+server's `~/.ssh/config`, registered on this repo only (title "tapmytee
+server (read-only)" in the repo's Deploy keys settings).
+
+Both plugins are deployed **inactive** — activate manually from wp-admin
+(Core/`food-menu` first, confirm it's stable, then `food-menu-pos-sync`)
+rather than auto-activating on deploy, since this hasn't been through a real
+WordPress install before.
+
+Once a live (not just test) deploy target is decided, point it at `main`
+instead of `staging`, following the same pattern `food-menu-plugin` uses.
 
 ## Relationship to `food-menu-plugin` / `food-menu-plugin-api`
 
