@@ -1,0 +1,39 @@
+/* Admin styles for Food Menu */
+
+.fmp-required {
+	color: #d63638;
+}
+
+.fmp-variations-table {
+	border-collapse: collapse;
+	margin-bottom: 10px;
+}
+
+.fmp-variations-table th,
+.fmp-variations-table td {
+	padding: 6px 8px;
+	vertical-align: middle;
+}
+
+.fmp-drag-handle-col {
+	width: 24px;
+}
+
+.fmp-drag-handle {
+	cursor: move;
+	text-align: center;
+	color: #999;
+}
+
+.fmp-variation-row.ui-sortable-helper {
+	background: #fff;
+	box-shadow: 0 1px 4px rgba( 0, 0, 0, 0.15 );
+	display: table;
+}
+
+.fmp-remove-variation {
+	color: #d63638;
+	font-size: 18px;
+	line-height: 1;
+	text-decoration: none;
+}
