@@ -5,7 +5,7 @@ repos were independent forks that happened to look similar — this repo instead
 has one plugin own the data model, with addons attaching behavior to it.
 
 - **`food-menu/`** — Core plugin. Owns the Food Menu Item post type, the
-  Branch/Location/Category taxonomies, Price/Variations meta, the admin UI,
+  Branch/Location/Menu/Category taxonomies, Price/Variations meta, the admin UI,
   and the Elementor Dynamic Tags. Nothing else needs to be installed for a
   site to have a working food menu.
 - **`food-menu-pos-sync/`** — Addon plugin. Requires Core active. Adds

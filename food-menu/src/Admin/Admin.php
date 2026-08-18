@@ -302,6 +302,7 @@ class Admin {
 		$taxonomies = array(
 			Taxonomies::BRANCH   => __( 'Branch', 'food-menu' ),
 			Taxonomies::LOCATION => __( 'Location', 'food-menu' ),
+			Taxonomies::MENU     => __( 'Menu', 'food-menu' ),
 			Taxonomies::CATEGORY => __( 'Category', 'food-menu' ),
 		);
 
