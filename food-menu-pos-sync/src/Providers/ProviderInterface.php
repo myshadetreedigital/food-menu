@@ -54,7 +54,7 @@ interface ProviderInterface {
 	 *   'pos_item_id' => string,  // stable ID used to prevent duplicates on re-sync
 	 *   'name'        => string,
 	 *   'price'       => string,  // text, e.g. "$12.99" — never a float
-	 *   'category'    => string|null, // display name, for assigning the WP Category term
+	 *   'category'    => string|null, // display name, for assigning the WP Label term
 	 *   'category_id' => string|null, // the provider's own stable category ID — used for filtering,
 	 *                                 // never for display. Required if this provider supports
 	 *                                 // discover_categories(); the sync engine matches against it.

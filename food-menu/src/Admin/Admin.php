@@ -303,7 +303,7 @@ class Admin {
 			Taxonomies::BRANCH   => __( 'Branch', 'food-menu' ),
 			Taxonomies::LOCATION => __( 'Location', 'food-menu' ),
 			Taxonomies::MENU     => __( 'Menu', 'food-menu' ),
-			Taxonomies::CATEGORY => __( 'Category', 'food-menu' ),
+			Taxonomies::LABEL    => __( 'Label', 'food-menu' ),
 		);
 
 		foreach ( $taxonomies as $taxonomy => $label ) {

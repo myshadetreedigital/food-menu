@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.0
 Requires PHP: 7.4
 Requires Plugins: food-menu
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,13 @@ shared settings-tabs hook rather than a separate top-level admin menu.
 4. Configure a provider under **Food Menu → Settings → POS Sync**.
 
 == Changelog ==
+
+= 2.0.1 =
+* Follows Food Menu 2.2.0's Category → Label rename internally
+  (Taxonomies::CATEGORY → Taxonomies::LABEL, assign_category() →
+  assign_label()). No behavior change — Toast/Square's own "category"
+  field is still called that in provider code, since that's their term
+  for it; only the WordPress-side taxonomy reference changed.
 
 = 2.0.0 =
 * Rebuilt as an addon plugin: previously this logic lived inside

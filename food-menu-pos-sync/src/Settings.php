@@ -129,7 +129,7 @@ class Settings {
 	public function render_tab() {
 		$provider_id = isset( $_GET['provider'] ) ? sanitize_key( wp_unslash( $_GET['provider'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		?>
-		<p><?php esc_html_e( 'Pull-only: this never writes changes back to a POS. More than one provider can be enabled at once — useful if different Branches/Locations run different POS systems. Name, Price, Category, and Variations (for providers that report them) are kept in sync on every pull; Item Description and Item Image are only set the first time an item is imported, so your edits in wp-admin are never overwritten.', 'food-menu-pos-sync' ); ?></p>
+		<p><?php esc_html_e( 'Pull-only: this never writes changes back to a POS. More than one provider can be enabled at once — useful if different Branches/Locations run different POS systems. Name, Price, Label, and Variations (for providers that report them) are kept in sync on every pull; Item Description and Item Image are only set the first time an item is imported, so your edits in wp-admin are never overwritten.', 'food-menu-pos-sync' ); ?></p>
 
 		<?php
 		if ( $provider_id && self::get_provider_instance( $provider_id ) ) {

@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registers the Branch, Location, Menu, and Category taxonomies for Food
+ * Registers the Branch, Location, Menu, and Label taxonomies for Food
  * Menu Items.
  */
 class Taxonomies {
@@ -15,7 +15,12 @@ class Taxonomies {
 	const BRANCH   = 'food_menu_branch';
 	const LOCATION = 'food_menu_location';
 	const MENU     = 'food_menu_menu';
-	const CATEGORY = 'food_menu_category';
+	// Slug stays food_menu_category — renaming it would orphan every term
+	// and term relationship already created under it on live sites. Only
+	// the display label changed (Category read as a second, confusingly
+	// similar taxonomy next to Menu); "Label" is a better fit for what
+	// this taxonomy actually holds — promotional tags, not menu sections.
+	const LABEL = 'food_menu_category';
 
 	public function init() {
 		add_action( 'init', array( $this, 'register' ) );
@@ -44,9 +49,9 @@ class Taxonomies {
 		);
 
 		$this->register_taxonomy(
-			self::CATEGORY,
-			__( 'Category', 'food-menu' ),
-			__( 'Categories', 'food-menu' ),
+			self::LABEL,
+			__( 'Label', 'food-menu' ),
+			__( 'Labels', 'food-menu' ),
 			__( 'A promotional or merchandising tag for this item, e.g. Specials, Featured, Popular, New.', 'food-menu' )
 		);
 	}

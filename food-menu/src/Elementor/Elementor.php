@@ -44,7 +44,7 @@ class Elementor {
 		$dynamic_tags->register( new Tags\BranchTag() );
 		$dynamic_tags->register( new Tags\LocationTag() );
 		$dynamic_tags->register( new Tags\MenuTag() );
-		$dynamic_tags->register( new Tags\CategoryTag() );
+		$dynamic_tags->register( new Tags\LabelTag() );
 		$dynamic_tags->register( new Tags\PriceTag() );
 		$dynamic_tags->register( new Tags\VariationsTag() );
 

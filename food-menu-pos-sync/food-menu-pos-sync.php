@@ -3,7 +3,7 @@
  * Plugin Name:       Food Menu – POS Sync
  * Plugin URI:         https://github.com/myshadetreedigital/food-menu-pos-sync
  * Description:        Pull-only POS sync (Toast, Square) into Food Menu Items. Requires the Food Menu plugin.
- * Version:            2.0.0
+ * Version:            2.0.1
  * Requires at least:  6.0
  * Requires PHP:       7.4
  * Requires Plugins:   food-menu
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FOOD_MENU_POS_SYNC_VERSION', '2.0.0' );
+define( 'FOOD_MENU_POS_SYNC_VERSION', '2.0.1' );
 define( 'FOOD_MENU_POS_SYNC_PLUGIN_FILE', __FILE__ );
 define( 'FOOD_MENU_POS_SYNC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FOOD_MENU_POS_SYNC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

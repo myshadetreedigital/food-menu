@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * duplicates, and a manually-created item with a matching name is never
  * silently merged into a POS-synced one.
  *
- * Fields owned by POS (name, price, Category, and Variations — for
+ * Fields owned by POS (name, price, Label, and Variations — for
  * providers that report a variations concept) are overwritten on every
  * sync. Fields owned by staff (Item Description, Item Image) are only
  * ever set once, when a POS item is first imported — never touched
@@ -159,7 +159,7 @@ class Sync {
 		}
 
 		if ( ! empty( $item['category'] ) ) {
-			$this->assign_category( $post_id, $item['category'] );
+			$this->assign_label( $post_id, $item['category'] );
 		}
 
 		if ( $is_create ) {
@@ -200,12 +200,16 @@ class Sync {
 		return ! empty( $posts ) ? (int) $posts[0] : 0;
 	}
 
-	private function assign_category( $post_id, $category_name ) {
+	// Named after the provider's own 'category' field (see
+	// ProviderInterface::fetch_items()), but assigns into Core's Label
+	// taxonomy — Category was renamed to Label; this is the same taxonomy
+	// (food_menu_category slug, unchanged), just the display name moved.
+	private function assign_label( $post_id, $category_name ) {
 		$category_name = sanitize_text_field( $category_name );
-		$term           = get_term_by( 'name', $category_name, Taxonomies::CATEGORY );
+		$term           = get_term_by( 'name', $category_name, Taxonomies::LABEL );
 
 		if ( ! $term ) {
-			$inserted = wp_insert_term( $category_name, Taxonomies::CATEGORY );
+			$inserted = wp_insert_term( $category_name, Taxonomies::LABEL );
 			if ( is_wp_error( $inserted ) ) {
 				return;
 			}
@@ -214,7 +218,7 @@ class Sync {
 			$term_id = $term->term_id;
 		}
 
-		wp_set_object_terms( $post_id, (int) $term_id, Taxonomies::CATEGORY, false );
+		wp_set_object_terms( $post_id, (int) $term_id, Taxonomies::LABEL, false );
 	}
 
 	private function sideload_featured_image( $post_id, $image_url ) {

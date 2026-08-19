@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Shared rendering logic for the Branch/Location/Category dynamic tags.
+ * Shared rendering logic for the Branch/Location/Menu/Label dynamic tags.
  * Each taxonomy gets its own standalone tag (not one tag with a taxonomy
  * picker control) so all three show up as separate, directly selectable
  * options in Elementor's Dynamic Tag list.

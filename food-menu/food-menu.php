@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Food Menu
  * Plugin URI:         https://github.com/myshadetreedigital/food-menu
- * Description:        Structured food menu data (branches, locations, menus, categories, prices, variations) built for Elementor Loop Grid/Carousel presentation. Core data model — addons (POS sync, etc.) attach to it.
- * Version:            2.1.0
+ * Description:        Structured food menu data (branches, locations, menus, labels, prices, variations) built for Elementor Loop Grid/Carousel presentation. Core data model — addons (POS sync, etc.) attach to it.
+ * Version:            2.2.0
  * Requires at least:  6.0
  * Requires PHP:       7.4
  * Author:             Tiya Rabb
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FOOD_MENU_VERSION', '2.1.0' );
+define( 'FOOD_MENU_VERSION', '2.2.0' );
 define( 'FOOD_MENU_PLUGIN_FILE', __FILE__ );
 define( 'FOOD_MENU_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FOOD_MENU_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

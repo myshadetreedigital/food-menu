@@ -4,16 +4,16 @@ Tags: menu, restaurant, food, elementor
 Requires at least: 6.0
 Tested up to: 6.0
 Requires PHP: 7.4
-Stable tag: 2.1.0
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Structured food menu data (branches, locations, menus, categories, prices, variations) for restaurants, franchises, and food trucks — built for Elementor. Core data model; addons attach behavior to it.
+Structured food menu data (branches, locations, menus, labels, prices, variations) for restaurants, franchises, and food trucks — built for Elementor. Core data model; addons attach behavior to it.
 
 == Description ==
 
 Food Menu creates a Food Menu Item custom post type with Branch,
-Location, Menu, and Category taxonomies, a text-based Price field, and
+Location, Menu, and Label taxonomies, a text-based Price field, and
 repeatable Variations (name + price). The plugin owns the data model only —
 build the actual menu layout in Elementor using Loop Grid, Loop Carousel,
 and Dynamic Tags. Elementor's Loop Grid/Carousel Query controls can
@@ -30,9 +30,18 @@ README.md for full documentation.
 1. Upload the plugin files to `/wp-content/plugins/food-menu`.
 2. Activate the plugin through the "Plugins" screen in WordPress.
 3. Use the new "Food Menu" admin menu to add Branches, Locations,
-   Menus, Categories, and Menu Items.
+   Menus, Labels, and Menu Items.
 
 == Changelog ==
+
+= 2.2.0 =
+* Renamed the Category taxonomy's label to Label (e.g. Specials, Featured,
+  Popular, New) — "Category" read as a second, confusingly similar
+  taxonomy sitting right next to Menu. Slug (food_menu_category) and all
+  existing term data are unchanged, so nothing on an already-live site
+  needs migrating. The Elementor Dynamic Tag's internal name (fmp-category)
+  is also unchanged so existing templates keep working; only its display
+  title changed to "Label".
 
 = 2.1.0 =
 * Added the Menu taxonomy (e.g. Lunch, Brunch, Apps, Drinks) — the "which
