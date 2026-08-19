@@ -4,7 +4,7 @@ Tags: menu, restaurant, food, elementor
 Requires at least: 6.0
 Tested up to: 6.0
 Requires PHP: 7.4
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,11 @@ README.md for full documentation.
    Menus, Labels, and Menu Items.
 
 == Changelog ==
+
+= 2.2.1 =
+* Label is no longer required to publish — it's a promotional tag
+  (Specials, Featured, ...), not every item needs one. Branch, Location,
+  and Menu are still required.
 
 = 2.2.0 =
 * Renamed the Category taxonomy's label to Label (e.g. Specials, Featured,
