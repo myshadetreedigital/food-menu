@@ -4,7 +4,7 @@ Tags: menu, restaurant, food, elementor
 Requires at least: 6.0
 Tested up to: 6.0
 Requires PHP: 7.4
-Stable tag: 2.2.1
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,12 @@ README.md for full documentation.
    Menus, Labels, and Menu Items.
 
 == Changelog ==
+
+= 2.3.0 =
+* Added an optional MP4/WebM video URL field, supporting external URLs and
+  Media Library videos.
+* Added an optional video poster image with Featured Image fallback.
+* Added Item Video and Item Video Poster Elementor Dynamic Tags.
 
 = 2.2.1 =
 * Label is no longer required to publish — it's a promotional tag

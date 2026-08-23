@@ -79,6 +79,7 @@ class Admin {
 		}
 
 		wp_enqueue_style( 'food-menu-admin', FOOD_MENU_PLUGIN_URL . 'admin/css/admin.css', array(), FOOD_MENU_VERSION );
+		wp_enqueue_media();
 		wp_enqueue_script( 'jquery-ui-sortable' );
 		wp_enqueue_script( 'food-menu-admin', FOOD_MENU_PLUGIN_URL . 'admin/js/admin.js', array( 'jquery', 'jquery-ui-sortable' ), FOOD_MENU_VERSION, true );
 	}
@@ -95,6 +96,15 @@ class Admin {
 			PostTypes::POST_TYPE,
 			'side',
 			'high'
+		);
+
+		add_meta_box(
+			'fmp_video',
+			__( 'Item Video (optional)', 'food-menu' ),
+			array( $this, 'render_video_meta_box' ),
+			PostTypes::POST_TYPE,
+			'side',
+			'default'
 		);
 
 		add_meta_box(
@@ -150,6 +160,32 @@ class Admin {
 		<p class="description">
 			<?php esc_html_e( 'Stored as text, not a number, so values like "MKT" or "2 for $8" work fine.', 'food-menu' ); ?>
 		</p>
+		<?php
+	}
+
+	public function render_video_meta_box( $post ) {
+		$video_url  = get_post_meta( $post->ID, MetaFields::VIDEO_URL, true );
+		$poster_id  = absint( get_post_meta( $post->ID, MetaFields::VIDEO_POSTER, true ) );
+		$poster_url = $poster_id ? wp_get_attachment_image_url( $poster_id, 'thumbnail' ) : '';
+		?>
+		<p>
+			<label for="fmp_video_url"><strong><?php esc_html_e( 'Video URL', 'food-menu' ); ?></strong></label>
+		</p>
+		<input type="url" id="fmp_video_url" name="fmp_video_url" class="widefat" value="<?php echo esc_attr( $video_url ); ?>" placeholder="https://example.com/item.mp4" />
+		<p class="description"><?php esc_html_e( 'Use an external MP4/WebM URL or choose a video from the Media Library.', 'food-menu' ); ?></p>
+		<p>
+			<button type="button" class="button" id="fmp-select-video"><?php esc_html_e( 'Choose Video', 'food-menu' ); ?></button>
+			<button type="button" class="button-link fmp-remove-media" id="fmp-remove-video" <?php disabled( empty( $video_url ) ); ?>><?php esc_html_e( 'Remove', 'food-menu' ); ?></button>
+		</p>
+		<hr />
+		<p><strong><?php esc_html_e( 'Video Poster', 'food-menu' ); ?></strong></p>
+		<input type="hidden" id="fmp_video_poster_id" name="fmp_video_poster_id" value="<?php echo esc_attr( $poster_id ); ?>" />
+		<div id="fmp-video-poster-preview"><?php echo $poster_url ? '<img src="' . esc_url( $poster_url ) . '" alt="" />' : ''; ?></div>
+		<p>
+			<button type="button" class="button" id="fmp-select-video-poster"><?php esc_html_e( 'Choose Poster', 'food-menu' ); ?></button>
+			<button type="button" class="button-link fmp-remove-media" id="fmp-remove-video-poster" <?php disabled( ! $poster_id ); ?>><?php esc_html_e( 'Remove', 'food-menu' ); ?></button>
+		</p>
+		<p class="description"><?php esc_html_e( 'Defaults to the featured image when no poster is selected.', 'food-menu' ); ?></p>
 		<?php
 	}
 
@@ -234,6 +270,20 @@ class Admin {
 			} else {
 				update_post_meta( $post_id, MetaFields::PRICE, $price );
 			}
+		}
+
+		$video_url = isset( $_POST['fmp_video_url'] ) ? MetaFields::sanitize_video_url( $_POST['fmp_video_url'] ) : '';
+		if ( '' === $video_url ) {
+			delete_post_meta( $post_id, MetaFields::VIDEO_URL );
+		} else {
+			update_post_meta( $post_id, MetaFields::VIDEO_URL, $video_url );
+		}
+
+		$poster_id = isset( $_POST['fmp_video_poster_id'] ) ? absint( $_POST['fmp_video_poster_id'] ) : 0;
+		if ( $poster_id && wp_attachment_is_image( $poster_id ) ) {
+			update_post_meta( $post_id, MetaFields::VIDEO_POSTER, $poster_id );
+		} else {
+			delete_post_meta( $post_id, MetaFields::VIDEO_POSTER );
 		}
 
 		$names  = isset( $_POST['fmp_variations']['name'] ) ? (array) $_POST['fmp_variations']['name'] : array();

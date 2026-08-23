@@ -19,6 +19,8 @@ class MetaFields {
 
 	const PRICE        = 'fmp_price';
 	const VARIATIONS   = 'fmp_variations';
+	const VIDEO_URL    = 'fmp_video_url';
+	const VIDEO_POSTER = 'fmp_video_poster_id';
 	const NONCE_ACTION = 'fmp_save_meta';
 	const NONCE_NAME   = 'fmp_meta_nonce';
 
@@ -65,6 +67,34 @@ class MetaFields {
 				'auth_callback'     => array( __CLASS__, 'auth_callback' ),
 			)
 		);
+
+		register_post_meta(
+			PostTypes::POST_TYPE,
+			self::VIDEO_URL,
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Optional MP4 or WebM video URL.', 'food-menu' ),
+				'single'            => true,
+				'default'           => '',
+				'show_in_rest'      => true,
+				'sanitize_callback' => array( __CLASS__, 'sanitize_video_url' ),
+				'auth_callback'     => array( __CLASS__, 'auth_callback' ),
+			)
+		);
+
+		register_post_meta(
+			PostTypes::POST_TYPE,
+			self::VIDEO_POSTER,
+			array(
+				'type'              => 'integer',
+				'description'       => __( 'Optional image attachment ID used as the video poster.', 'food-menu' ),
+				'single'            => true,
+				'default'           => 0,
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'absint',
+				'auth_callback'     => array( __CLASS__, 'auth_callback' ),
+			)
+		);
 	}
 
 	public static function auth_callback( $allowed, $meta_key, $post_id ) {
@@ -77,6 +107,20 @@ class MetaFields {
 	 */
 	public static function sanitize_price( $value ) {
 		return sanitize_text_field( wp_unslash( (string) $value ) );
+	}
+
+	public static function sanitize_video_url( $value ) {
+		$url = esc_url_raw( wp_unslash( (string) $value ), array( 'http', 'https' ) );
+		if ( '' === $url ) {
+			return '';
+		}
+
+		$path = strtolower( (string) wp_parse_url( $url, PHP_URL_PATH ) );
+		if ( ! preg_match( '/\.(mp4|webm)$/', $path ) ) {
+			return '';
+		}
+
+		return $url;
 	}
 
 	public static function sanitize_variations( $value ) {

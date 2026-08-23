@@ -41,6 +41,8 @@ class Elementor {
 		$dynamic_tags->register( new Tags\ItemNameTag() );
 		$dynamic_tags->register( new Tags\ItemDescriptionTag() );
 		$dynamic_tags->register( new Tags\ItemImageTag() );
+		$dynamic_tags->register( new Tags\ItemVideoTag() );
+		$dynamic_tags->register( new Tags\ItemVideoPosterTag() );
 		$dynamic_tags->register( new Tags\BranchTag() );
 		$dynamic_tags->register( new Tags\LocationTag() );
 		$dynamic_tags->register( new Tags\MenuTag() );
