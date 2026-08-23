@@ -164,10 +164,10 @@ class Sync {
 
 		if ( $is_create ) {
 			if ( ! empty( $provider_settings['branch_term_id'] ) ) {
-				wp_set_object_terms( $post_id, (int) $provider_settings['branch_term_id'], Taxonomies::BRANCH, false );
+				wp_set_object_terms( $post_id, array( (int) $provider_settings['branch_term_id'] ), Taxonomies::BRANCH, false );
 			}
 			if ( ! empty( $provider_settings['location_term_id'] ) ) {
-				wp_set_object_terms( $post_id, (int) $provider_settings['location_term_id'], Taxonomies::LOCATION, false );
+				wp_set_object_terms( $post_id, array( (int) $provider_settings['location_term_id'] ), Taxonomies::LOCATION, false );
 			}
 			if ( ! empty( $item['image_url'] ) ) {
 				$this->sideload_featured_image( $post_id, $item['image_url'] );
@@ -218,7 +218,7 @@ class Sync {
 			$term_id = $term->term_id;
 		}
 
-		wp_set_object_terms( $post_id, (int) $term_id, Taxonomies::LABEL, false );
+		wp_set_object_terms( $post_id, array( (int) $term_id ), Taxonomies::LABEL, false );
 	}
 
 	private function sideload_featured_image( $post_id, $image_url ) {

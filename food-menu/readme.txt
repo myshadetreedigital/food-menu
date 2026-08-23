@@ -4,7 +4,7 @@ Tags: menu, restaurant, food, elementor
 Requires at least: 6.0
 Tested up to: 6.0
 Requires PHP: 7.4
-Stable tag: 2.3.0
+Stable tag: 2.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,12 @@ README.md for full documentation.
   Media Library videos.
 * Added an optional video poster image with Featured Image fallback.
 * Added Item Video and Item Video Poster Elementor Dynamic Tags.
+
+= 2.3.1 =
+* Preserve commas and punctuation in a single incoming taxonomy value instead
+  of allowing WordPress to interpret comma-delimited input as multiple terms.
+  This keeps full addresses together and leaves invalid source data visible
+  for the user to correct rather than silently transforming it.
 
 = 2.2.1 =
 * Label is no longer required to publish — it's a promotional tag

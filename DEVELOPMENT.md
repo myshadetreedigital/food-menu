@@ -69,3 +69,9 @@ logic was ported, into `food-menu-pos-sync/`.
   (`wp-config.php`).
 - Do not force-push to `main` or `staging`.
 - Test changes on `staging` (or locally) before merging into `main`.
+
+When assigning a taxonomy value from external data, pass values as an array to
+`wp_set_object_terms()`. WordPress can interpret a comma-delimited string as
+multiple terms, which would split a full address such as `123 Main St, Suite
+200`. Preserve the complete source value and let the user correct bad source
+data rather than silently transforming it.

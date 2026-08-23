@@ -22,6 +22,15 @@ class Taxonomies {
 	// this taxonomy actually holds — promotional tags, not menu sections.
 	const LABEL = 'food_menu_category';
 
+	/**
+	 * Preserve commas and other punctuation in a single incoming term value.
+	 * WordPress may interpret a comma-delimited string as multiple terms.
+	 */
+	public static function single_term_value( $value ) {
+		$value = sanitize_text_field( wp_unslash( (string) $value ) );
+		return '' === $value ? array() : array( $value );
+	}
+
 	public function init() {
 		add_action( 'init', array( $this, 'register' ) );
 	}
