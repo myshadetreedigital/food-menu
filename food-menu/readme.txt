@@ -4,7 +4,7 @@ Tags: menu, restaurant, food, elementor
 Requires at least: 6.0
 Tested up to: 6.0
 Requires PHP: 7.4
-Stable tag: 2.3.1
+Stable tag: 2.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,16 @@ README.md for full documentation.
    Menus, Labels, and Menu Items.
 
 == Changelog ==
+
+= 2.4.0 =
+* Branch, Location, and Menu are now single relationships per Food Menu Item.
+  The same item must be entered separately for each menu or location where it
+  represents a distinct operational item.
+* The admin editor uses single-select controls, and API/POS assignments are
+  normalized to one term so addresses, prices, inventory, and media resolve
+  unambiguously. Labels remain multi-select.
+* Existing multi-term data is not deleted in bulk; it is reduced to one term
+  when the affected item is next saved, with publishing requiring exactly one.
 
 = 2.3.0 =
 * Added an optional MP4/WebM video URL field, supporting external URLs and

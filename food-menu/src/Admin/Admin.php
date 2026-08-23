@@ -358,15 +358,9 @@ class Admin {
 		);
 
 		foreach ( $taxonomies as $taxonomy => $label ) {
-			$terms = isset( $_POST['tax_input'][ $taxonomy ] ) ? (array) $_POST['tax_input'][ $taxonomy ] : array();
-			$terms = array_filter(
-				$terms,
-				function ( $term ) {
-					return '' !== $term && '0' !== $term;
-				}
-			);
-			if ( empty( $terms ) ) {
-				$missing[] = $label;
+			$term_ids = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'ids' ) );
+			if ( is_wp_error( $term_ids ) || 1 !== count( $term_ids ) ) {
+				$missing[] = sprintf( __( '%s (choose exactly one)', 'food-menu' ), $label );
 			}
 		}
 

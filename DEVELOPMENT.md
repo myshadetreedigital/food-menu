@@ -70,6 +70,11 @@ logic was ported, into `food-menu-pos-sync/`.
 - Do not force-push to `main` or `staging`.
 - Test changes on `staging` (or locally) before merging into `main`.
 
+Food Menu Items have exactly one Branch, Location, and Menu, plus zero or more
+Labels. Repeating an item for another menu or location is intentional: it keeps
+price, inventory, media, and other operational values independent. Do not use
+comma-delimited strings to represent multiple taxonomy relationships.
+
 When assigning a taxonomy value from external data, pass values as an array to
 `wp_set_object_terms()`. WordPress can interpret a comma-delimited string as
 multiple terms, which would split a full address such as `123 Main St, Suite
