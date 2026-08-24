@@ -2,6 +2,7 @@
 namespace FoodMenu\Core\Elementor;
 
 use FoodMenu\Core\PostTypes;
+use FoodMenu\Core\Taxonomies;
 use FoodMenu\Core\Support\Hooks;
 
 // Exit if accessed directly.
@@ -43,6 +44,14 @@ class Elementor {
 		$dynamic_tags->register( new Tags\ItemImageTag() );
 		$dynamic_tags->register( new Tags\ItemVideoTag() );
 		$dynamic_tags->register( new Tags\ItemVideoPosterTag() );
+		foreach ( array( Taxonomies::BRANCH, Taxonomies::LOCATION, Taxonomies::MENU ) as $taxonomy ) {
+			$taxonomy_object = get_taxonomy( $taxonomy );
+			$taxonomy_label  = $taxonomy_object ? $taxonomy_object->labels->singular_name : __( 'Term', 'food-menu' );
+			$dynamic_tags->register( new Tags\TermImageTag( $taxonomy ) );
+			$dynamic_tags->register( new Tags\TermImageTag( $taxonomy, true ) );
+			$dynamic_tags->register( new Tags\TermFieldTag( $taxonomy, Taxonomies::TERM_VIDEO, 'fmp-' . $taxonomy . '-video', sprintf( __( '%s Video', 'food-menu' ), $taxonomy_label ), \Elementor\Modules\DynamicTags\Module::URL_CATEGORY ) );
+		}
+		$dynamic_tags->register( new Tags\TermFieldTag( Taxonomies::LOCATION, Taxonomies::TERM_ADDRESS, 'fmp-location-address', __( 'Location Address', 'food-menu' ), \Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY ) );
 		$dynamic_tags->register( new Tags\BranchTag() );
 		$dynamic_tags->register( new Tags\LocationTag() );
 		$dynamic_tags->register( new Tags\MenuTag() );

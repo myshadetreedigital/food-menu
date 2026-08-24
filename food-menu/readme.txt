@@ -4,7 +4,7 @@ Tags: menu, restaurant, food, elementor
 Requires at least: 6.0
 Tested up to: 6.0
 Requires PHP: 7.4
-Stable tag: 2.4.0
+Stable tag: 2.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,13 @@ README.md for full documentation.
    Menus, Labels, and Menu Items.
 
 == Changelog ==
+
+= 2.5.0 =
+* Added optional Address, Image, MP4/WebM Video, and Video Poster fields to
+  Branch, Location, and Menu terms. Location addresses preserve commas as one
+  value.
+* Added Elementor Dynamic Tags for term media and Location Address. Term video
+  posters fall back to the term image when no poster is selected.
 
 = 2.4.0 =
 * Branch, Location, and Menu are now single relationships per Food Menu Item.

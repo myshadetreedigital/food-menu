@@ -69,12 +69,15 @@ class Admin {
 	}
 
 	public function enqueue_assets( $hook ) {
-		if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+		if ( ! in_array( $hook, array( 'post.php', 'post-new.php', 'edit-tags.php', 'term.php' ), true ) ) {
 			return;
 		}
 
 		$screen = get_current_screen();
-		if ( ! $screen || PostTypes::POST_TYPE !== $screen->post_type ) {
+		$taxonomy_screens = array( 'food_menu_branch', 'food_menu_location', 'food_menu_menu' );
+		$is_post_screen   = $screen && PostTypes::POST_TYPE === $screen->post_type;
+		$is_term_screen   = $screen && in_array( $screen->taxonomy, $taxonomy_screens, true );
+		if ( ! $screen || ( ! $is_post_screen && ! $is_term_screen ) ) {
 			return;
 		}
 

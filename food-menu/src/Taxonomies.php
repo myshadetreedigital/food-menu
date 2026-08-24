@@ -21,6 +21,10 @@ class Taxonomies {
 	// similar taxonomy next to Menu); "Label" is a better fit for what
 	// this taxonomy actually holds — promotional tags, not menu sections.
 	const LABEL = 'food_menu_category';
+	const TERM_ADDRESS = 'fmp_term_address';
+	const TERM_IMAGE   = 'fmp_term_image_id';
+	const TERM_VIDEO   = 'fmp_term_video_url';
+	const TERM_POSTER  = 'fmp_term_video_poster_id';
 
 	private $normalizing_single_term = false;
 
@@ -33,12 +37,28 @@ class Taxonomies {
 		return '' === $value ? array() : array( $value );
 	}
 
+	public static function sanitize_address( $value ) {
+		return sanitize_text_field( wp_unslash( (string) $value ) );
+	}
+
+	public static function sanitize_video_url( $value ) {
+		$url  = esc_url_raw( wp_unslash( (string) $value ), array( 'http', 'https' ) );
+		$path = strtolower( (string) wp_parse_url( $url, PHP_URL_PATH ) );
+		return $url && preg_match( '/\.(mp4|webm)$/', $path ) ? $url : '';
+	}
+
 	public function init() {
 		add_action( 'init', array( $this, 'register' ) );
 		add_action( 'set_object_terms', array( $this, 'enforce_single_term_relationship' ), 10, 6 );
 	}
 
 	public function register() {
+		foreach ( array( self::BRANCH, self::LOCATION, self::MENU ) as $taxonomy ) {
+			add_action( $taxonomy . '_add_form_fields', array( $this, 'render_term_fields' ) );
+			add_action( $taxonomy . '_edit_form_fields', array( $this, 'render_term_fields' ), 10, 2 );
+			add_action( 'created_' . $taxonomy, array( $this, 'save_term_fields' ) );
+			add_action( 'edited_' . $taxonomy, array( $this, 'save_term_fields' ) );
+		}
 		$this->register_taxonomy(
 			self::BRANCH,
 			__( 'Branch', 'food-menu' ),
@@ -69,6 +89,13 @@ class Taxonomies {
 			__( 'Labels', 'food-menu' ),
 			__( 'A promotional or merchandising tag for this item, e.g. Specials, Featured, Popular, New.', 'food-menu' )
 		);
+
+		foreach ( array( self::BRANCH, self::LOCATION, self::MENU ) as $taxonomy ) {
+			register_term_meta( $taxonomy, self::TERM_IMAGE, array( 'type' => 'integer', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'absint' ) );
+			register_term_meta( $taxonomy, self::TERM_VIDEO, array( 'type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => array( __CLASS__, 'sanitize_video_url' ) ) );
+			register_term_meta( $taxonomy, self::TERM_POSTER, array( 'type' => 'integer', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'absint' ) );
+		}
+		register_term_meta( self::LOCATION, self::TERM_ADDRESS, array( 'type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => array( __CLASS__, 'sanitize_address' ) ) );
 	}
 
 	private function register_taxonomy( $taxonomy, $singular, $plural, $description, $single_term = false ) {
@@ -116,6 +143,62 @@ class Taxonomies {
 			array( PostTypes::POST_TYPE ),
 			$args
 		);
+	}
+
+	public function render_term_fields( $term = null, $taxonomy = null ) {
+		if ( is_string( $term ) && null === $taxonomy ) {
+			$taxonomy = $term;
+			$term     = null;
+		}
+		if ( null === $taxonomy ) {
+			$screen   = get_current_screen();
+			$taxonomy = $screen ? $screen->taxonomy : null;
+		}
+		$term_id    = $term instanceof \WP_Term ? $term->term_id : 0;
+		$taxonomy   = $term instanceof \WP_Term ? $term->taxonomy : $taxonomy;
+		$image_id   = $term_id ? absint( get_term_meta( $term_id, self::TERM_IMAGE, true ) ) : 0;
+		$poster_id  = $term_id ? absint( get_term_meta( $term_id, self::TERM_POSTER, true ) ) : 0;
+		$video_url  = $term_id ? get_term_meta( $term_id, self::TERM_VIDEO, true ) : '';
+		$address    = ( self::LOCATION === $taxonomy && $term_id ) ? get_term_meta( $term_id, self::TERM_ADDRESS, true ) : '';
+		$image_url  = $image_id ? wp_get_attachment_image_url( $image_id, 'thumbnail' ) : '';
+		$poster_url = $poster_id ? wp_get_attachment_image_url( $poster_id, 'thumbnail' ) : '';
+		$is_edit    = (bool) $term_id;
+		?>
+		<?php if ( $is_edit ) : ?><tr class="form-field"><th scope="row"><label><?php esc_html_e( 'Media', 'food-menu' ); ?></label></th><td><?php else : ?><div class="form-field"><label><?php esc_html_e( 'Media', 'food-menu' ); ?></label><p class="description"><?php esc_html_e( 'Optional image, MP4/WebM video, and video poster.', 'food-menu' ); ?></p><?php endif; ?>
+			<?php if ( self::LOCATION === $taxonomy ) : ?>
+			<p><label for="fmp_term_address"><?php esc_html_e( 'Address', 'food-menu' ); ?></label><input type="text" name="fmp_term_address" id="fmp_term_address" class="widefat" value="<?php echo esc_attr( $address ); ?>" /></p>
+			<?php endif; ?>
+			<p><label for="fmp_term_image_id"><?php esc_html_e( 'Image', 'food-menu' ); ?></label><input type="hidden" name="fmp_term_image_id" id="fmp_term_image_id" value="<?php echo esc_attr( $image_id ); ?>" /><span id="fmp-term-image-preview"><?php echo $image_url ? '<img src="' . esc_url( $image_url ) . '" alt="" />' : ''; ?></span> <button type="button" class="button fmp-term-select-image"><?php esc_html_e( 'Choose Image', 'food-menu' ); ?></button> <button type="button" class="button-link fmp-term-remove-image" <?php disabled( ! $image_id ); ?>><?php esc_html_e( 'Remove', 'food-menu' ); ?></button></p>
+			<p><label for="fmp_term_video_url"><?php esc_html_e( 'Video URL', 'food-menu' ); ?></label><input type="url" name="fmp_term_video_url" id="fmp_term_video_url" class="widefat" value="<?php echo esc_attr( $video_url ); ?>" placeholder="https://example.com/video.mp4" /><button type="button" class="button fmp-term-select-video"><?php esc_html_e( 'Choose MP4/WebM Video', 'food-menu' ); ?></button> <button type="button" class="button-link fmp-term-remove-video" <?php disabled( empty( $video_url ) ); ?>><?php esc_html_e( 'Remove', 'food-menu' ); ?></button></p>
+			<p><label for="fmp_term_video_poster_id"><?php esc_html_e( 'Video Poster', 'food-menu' ); ?></label><input type="hidden" name="fmp_term_video_poster_id" id="fmp_term_video_poster_id" value="<?php echo esc_attr( $poster_id ); ?>" /><span id="fmp-term-poster-preview"><?php echo $poster_url ? '<img src="' . esc_url( $poster_url ) . '" alt="" />' : ''; ?></span> <button type="button" class="button fmp-term-select-poster"><?php esc_html_e( 'Choose Poster', 'food-menu' ); ?></button> <button type="button" class="button-link fmp-term-remove-poster" <?php disabled( ! $poster_id ); ?>><?php esc_html_e( 'Remove', 'food-menu' ); ?></button></p>
+		<?php if ( $is_edit ) : ?></td></tr><?php else : ?></div><?php endif; ?>
+		<?php
+	}
+
+	public function save_term_fields( $term_id ) {
+		if ( ! current_user_can( 'manage_categories' ) ) {
+			return;
+		}
+		$image_id  = isset( $_POST['fmp_term_image_id'] ) ? absint( $_POST['fmp_term_image_id'] ) : 0;
+		$poster_id = isset( $_POST['fmp_term_video_poster_id'] ) ? absint( $_POST['fmp_term_video_poster_id'] ) : 0;
+		$video_url = isset( $_POST['fmp_term_video_url'] ) ? self::sanitize_video_url( $_POST['fmp_term_video_url'] ) : '';
+		$address   = isset( $_POST['fmp_term_address'] ) ? self::sanitize_address( $_POST['fmp_term_address'] ) : '';
+		$this->update_or_delete_term_meta( $term_id, self::TERM_IMAGE, $image_id && wp_attachment_is_image( $image_id ) ? $image_id : 0 );
+		$this->update_or_delete_term_meta( $term_id, self::TERM_POSTER, $poster_id && wp_attachment_is_image( $poster_id ) ? $poster_id : 0 );
+		$this->update_or_delete_term_meta( $term_id, self::TERM_VIDEO, $video_url );
+		if ( '' !== $address ) {
+			update_term_meta( $term_id, self::TERM_ADDRESS, $address );
+		} else {
+			delete_term_meta( $term_id, self::TERM_ADDRESS );
+		}
+	}
+
+	private function update_or_delete_term_meta( $term_id, $key, $value ) {
+		if ( $value ) {
+			update_term_meta( $term_id, $key, $value );
+		} else {
+			delete_term_meta( $term_id, $key );
+		}
 	}
 
 	public function render_single_term_metabox( $post, $box ) {

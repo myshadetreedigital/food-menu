@@ -26,6 +26,43 @@
 		} );
 	}
 
+	function initTermMediaPicker( buttonSelector, title, libraryType, inputSelector, previewSelector, removeSelector ) {
+		initMediaPicker( buttonSelector, title, libraryType, function ( attachment ) {
+			$( inputSelector ).val( attachment.id || attachment.url );
+			if ( previewSelector && attachment.url ) {
+				$( previewSelector ).html( '<img src="' + attachment.url + '" alt="" />' );
+			}
+			$( removeSelector ).prop( 'disabled', false );
+		} );
+	}
+
+	initTermMediaPicker( '.fmp-term-select-image', 'Choose Term Image', 'image', '#fmp_term_image_id', '#fmp-term-image-preview', '.fmp-term-remove-image' );
+	initTermMediaPicker( '.fmp-term-select-poster', 'Choose Term Video Poster', 'image', '#fmp_term_video_poster_id', '#fmp-term-poster-preview', '.fmp-term-remove-poster' );
+	initMediaPicker( '.fmp-term-select-video', 'Choose Term Video', [ 'video/mp4', 'video/webm' ], function ( attachment ) {
+		$( '#fmp_term_video_url' ).val( attachment.url );
+		$( '.fmp-term-remove-video' ).prop( 'disabled', false );
+	} );
+
+	$( document ).on( 'click', '.fmp-term-remove-image', function ( e ) {
+		e.preventDefault();
+		$( '#fmp_term_image_id' ).val( '' );
+		$( '#fmp-term-image-preview' ).empty();
+		$( this ).prop( 'disabled', true );
+	} );
+
+	$( document ).on( 'click', '.fmp-term-remove-poster', function ( e ) {
+		e.preventDefault();
+		$( '#fmp_term_video_poster_id' ).val( '' );
+		$( '#fmp-term-poster-preview' ).empty();
+		$( this ).prop( 'disabled', true );
+	} );
+
+	$( document ).on( 'click', '.fmp-term-remove-video', function ( e ) {
+		e.preventDefault();
+		$( '#fmp_term_video_url' ).val( '' );
+		$( this ).prop( 'disabled', true );
+	} );
+
 	initMediaPicker( '#fmp-select-video', 'Choose Item Video', [ 'video/mp4', 'video/webm' ], function ( attachment ) {
 		$( '#fmp_video_url' ).val( attachment.url );
 		$( '#fmp-remove-video' ).prop( 'disabled', false );
