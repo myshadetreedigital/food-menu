@@ -2,6 +2,7 @@
 namespace FoodMenu\Core\Elementor\Tags;
 
 use FoodMenu\Core\Elementor\Elementor;
+use FoodMenu\Core\Elementor\TaxonomyResolver;
 use FoodMenu\Core\Taxonomies;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -33,12 +34,12 @@ class TermFieldTag extends \Elementor\Core\DynamicTags\Tag {
 	public function get_categories() { return array( $this->category ); }
 
 	public function render() {
-		$terms = get_the_terms( get_the_ID(), $this->taxonomy );
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		$term = TaxonomyResolver::resolve( $this->taxonomy );
+		if ( ! $term ) {
 			return;
 		}
 
-		$value = get_term_meta( $terms[0]->term_id, $this->field, true );
+		$value = get_term_meta( $term->term_id, $this->field, true );
 		echo Taxonomies::TERM_VIDEO === $this->field ? esc_url( $value ) : esc_html( $value );
 	}
 }

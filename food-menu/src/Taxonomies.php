@@ -25,6 +25,8 @@ class Taxonomies {
 	const TERM_IMAGE   = 'fmp_term_image_id';
 	const TERM_VIDEO   = 'fmp_term_video_url';
 	const TERM_POSTER  = 'fmp_term_video_poster_id';
+	const LOCATION_BRANCH = 'fmp_location_branch_id';
+	const MENU_LOCATION   = 'fmp_menu_location_id';
 
 	private $normalizing_single_term = false;
 
@@ -95,6 +97,8 @@ class Taxonomies {
 			register_term_meta( $taxonomy, self::TERM_VIDEO, array( 'type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => array( __CLASS__, 'sanitize_video_url' ) ) );
 			register_term_meta( $taxonomy, self::TERM_POSTER, array( 'type' => 'integer', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'absint' ) );
 		}
+		register_term_meta( self::LOCATION, self::LOCATION_BRANCH, array( 'type' => 'integer', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'absint' ) );
+		register_term_meta( self::MENU, self::MENU_LOCATION, array( 'type' => 'integer', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'absint' ) );
 		register_term_meta( self::LOCATION, self::TERM_ADDRESS, array( 'type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => array( __CLASS__, 'sanitize_address' ) ) );
 	}
 
@@ -160,14 +164,17 @@ class Taxonomies {
 		$poster_id  = $term_id ? absint( get_term_meta( $term_id, self::TERM_POSTER, true ) ) : 0;
 		$video_url  = $term_id ? get_term_meta( $term_id, self::TERM_VIDEO, true ) : '';
 		$address    = ( self::LOCATION === $taxonomy && $term_id ) ? get_term_meta( $term_id, self::TERM_ADDRESS, true ) : '';
+		$parent_id  = self::LOCATION === $taxonomy && $term_id ? absint( get_term_meta( $term_id, self::LOCATION_BRANCH, true ) ) : ( self::MENU === $taxonomy && $term_id ? absint( get_term_meta( $term_id, self::MENU_LOCATION, true ) ) : 0 );
 		$image_url  = $image_id ? wp_get_attachment_image_url( $image_id, 'thumbnail' ) : '';
 		$poster_url = $poster_id ? wp_get_attachment_image_url( $poster_id, 'thumbnail' ) : '';
 		$is_edit    = (bool) $term_id;
 		?>
 		<?php if ( $is_edit ) : ?><tr class="form-field"><th scope="row"><label><?php esc_html_e( 'Media', 'food-menu' ); ?></label></th><td><?php else : ?><div class="form-field"><label><?php esc_html_e( 'Media', 'food-menu' ); ?></label><p class="description"><?php esc_html_e( 'Optional image, MP4/WebM video, and video poster.', 'food-menu' ); ?></p><?php endif; ?>
 			<?php if ( self::LOCATION === $taxonomy ) : ?>
+				<p><label for="fmp_term_parent_id"><?php esc_html_e( 'Branch', 'food-menu' ); ?></label><?php $this->render_parent_dropdown( self::BRANCH, $parent_id ); ?></p>
 			<p><label for="fmp_term_address"><?php esc_html_e( 'Address', 'food-menu' ); ?></label><input type="text" name="fmp_term_address" id="fmp_term_address" class="widefat" value="<?php echo esc_attr( $address ); ?>" /></p>
 			<?php endif; ?>
+				<?php if ( self::MENU === $taxonomy ) : ?><p><label for="fmp_term_parent_id"><?php esc_html_e( 'Location', 'food-menu' ); ?></label><?php $this->render_parent_dropdown( self::LOCATION, $parent_id ); ?></p><?php endif; ?>
 			<p><label for="fmp_term_image_id"><?php esc_html_e( 'Image', 'food-menu' ); ?></label><input type="hidden" name="fmp_term_image_id" id="fmp_term_image_id" value="<?php echo esc_attr( $image_id ); ?>" /><span id="fmp-term-image-preview"><?php echo $image_url ? '<img src="' . esc_url( $image_url ) . '" alt="" />' : ''; ?></span> <button type="button" class="button fmp-term-select-image"><?php esc_html_e( 'Choose Image', 'food-menu' ); ?></button> <button type="button" class="button-link fmp-term-remove-image" <?php disabled( ! $image_id ); ?>><?php esc_html_e( 'Remove', 'food-menu' ); ?></button></p>
 			<p><label for="fmp_term_video_url"><?php esc_html_e( 'Video URL', 'food-menu' ); ?></label><input type="url" name="fmp_term_video_url" id="fmp_term_video_url" class="widefat" value="<?php echo esc_attr( $video_url ); ?>" placeholder="https://example.com/video.mp4" /><button type="button" class="button fmp-term-select-video"><?php esc_html_e( 'Choose MP4/WebM Video', 'food-menu' ); ?></button> <button type="button" class="button-link fmp-term-remove-video" <?php disabled( empty( $video_url ) ); ?>><?php esc_html_e( 'Remove', 'food-menu' ); ?></button></p>
 			<p><label for="fmp_term_video_poster_id"><?php esc_html_e( 'Video Poster', 'food-menu' ); ?></label><input type="hidden" name="fmp_term_video_poster_id" id="fmp_term_video_poster_id" value="<?php echo esc_attr( $poster_id ); ?>" /><span id="fmp-term-poster-preview"><?php echo $poster_url ? '<img src="' . esc_url( $poster_url ) . '" alt="" />' : ''; ?></span> <button type="button" class="button fmp-term-select-poster"><?php esc_html_e( 'Choose Poster', 'food-menu' ); ?></button> <button type="button" class="button-link fmp-term-remove-poster" <?php disabled( ! $poster_id ); ?>><?php esc_html_e( 'Remove', 'food-menu' ); ?></button></p>
@@ -183,6 +190,7 @@ class Taxonomies {
 		$poster_id = isset( $_POST['fmp_term_video_poster_id'] ) ? absint( $_POST['fmp_term_video_poster_id'] ) : 0;
 		$video_url = isset( $_POST['fmp_term_video_url'] ) ? self::sanitize_video_url( $_POST['fmp_term_video_url'] ) : '';
 		$address   = isset( $_POST['fmp_term_address'] ) ? self::sanitize_address( $_POST['fmp_term_address'] ) : '';
+		$parent_id = isset( $_POST['fmp_term_parent_id'] ) ? absint( $_POST['fmp_term_parent_id'] ) : 0;
 		$this->update_or_delete_term_meta( $term_id, self::TERM_IMAGE, $image_id && wp_attachment_is_image( $image_id ) ? $image_id : 0 );
 		$this->update_or_delete_term_meta( $term_id, self::TERM_POSTER, $poster_id && wp_attachment_is_image( $poster_id ) ? $poster_id : 0 );
 		$this->update_or_delete_term_meta( $term_id, self::TERM_VIDEO, $video_url );
@@ -191,6 +199,23 @@ class Taxonomies {
 		} else {
 			delete_term_meta( $term_id, self::TERM_ADDRESS );
 		}
+		$term = get_term( $term_id );
+		if ( $term && self::LOCATION === $term->taxonomy ) {
+			$this->update_or_delete_term_meta( $term_id, self::LOCATION_BRANCH, $parent_id );
+		} elseif ( $term && self::MENU === $term->taxonomy ) {
+			$this->update_or_delete_term_meta( $term_id, self::MENU_LOCATION, $parent_id );
+		}
+	}
+
+	private function render_parent_dropdown( $taxonomy, $selected ) {
+		$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false, 'orderby' => 'name' ) );
+		echo '<select name="fmp_term_parent_id" id="fmp_term_parent_id" class="widefat"><option value="0">' . esc_html__( 'Select parent', 'food-menu' ) . '</option>';
+		if ( ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
+				echo '<option value="' . esc_attr( $term->term_id ) . '" ' . selected( $selected, $term->term_id, false ) . '>' . esc_html( $term->name ) . '</option>';
+			}
+		}
+		echo '</select>';
 	}
 
 	private function update_or_delete_term_meta( $term_id, $key, $value ) {

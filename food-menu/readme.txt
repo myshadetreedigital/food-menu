@@ -4,7 +4,7 @@ Tags: menu, restaurant, food, elementor
 Requires at least: 6.0
 Tested up to: 6.0
 Requires PHP: 7.4
-Stable tag: 2.5.0
+Stable tag: 2.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,12 @@ README.md for full documentation.
    Menus, Labels, and Menu Items.
 
 == Changelog ==
+
+= 2.6.0 =
+* Added the Food Menu Taxonomy Loop Elementor widget for Branch, Location,
+  and Menu term listings with links and optional term images.
+* Added explicit Branch-to-Location and Location-to-Menu relationships so
+  nested taxonomy navigation can be built without querying unrelated items.
 
 = 2.5.0 =
 * Added optional Address, Image, MP4/WebM Video, and Video Poster fields to

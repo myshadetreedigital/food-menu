@@ -40,3 +40,9 @@ Core internals — see `food-menu/src/Support/Hooks.php` for the full list:
   check addons can use in their own bootstrap.
 
 See `DEVELOPMENT.md` for the branch model and deploy notes.
+
+The Food Menu Taxonomy Loop Elementor widget lists Branch, Location, or Menu
+terms. On a Branch archive it lists that Branch's Locations; on a Location
+archive it lists that Location's Menus. Each term links to its native taxonomy
+archive, where a standard Elementor archive template can display the related
+items.

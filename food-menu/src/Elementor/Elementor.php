@@ -25,7 +25,12 @@ class Elementor {
 
 	public function init() {
 		add_action( 'elementor/dynamic_tags/register', array( $this, 'register_dynamic_tags' ) );
+		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
 		add_action( 'admin_init', array( $this, 'maybe_enable_cpt_support' ) );
+	}
+
+	public function register_widgets( $widgets_manager ) {
+		$widgets_manager->register( new TaxonomyLoopWidget() );
 	}
 
 	public function register_dynamic_tags( $dynamic_tags ) {

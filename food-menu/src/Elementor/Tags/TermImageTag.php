@@ -2,6 +2,7 @@
 namespace FoodMenu\Core\Elementor\Tags;
 
 use FoodMenu\Core\Elementor\Elementor;
+use FoodMenu\Core\Elementor\TaxonomyResolver;
 use FoodMenu\Core\Taxonomies;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -31,15 +32,15 @@ class TermImageTag extends \Elementor\Core\DynamicTags\Data_Tag {
 	public function get_categories() { return array( \Elementor\Modules\DynamicTags\Module::IMAGE_CATEGORY ); }
 
 	public function get_value( array $options = array() ) {
-		$terms = get_the_terms( get_the_ID(), $this->taxonomy );
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		$term = TaxonomyResolver::resolve( $this->taxonomy );
+		if ( ! $term ) {
 			return array();
 		}
 
 		$key      = $this->poster ? Taxonomies::TERM_POSTER : Taxonomies::TERM_IMAGE;
-		$image_id = absint( get_term_meta( $terms[0]->term_id, $key, true ) );
+		$image_id = absint( get_term_meta( $term->term_id, $key, true ) );
 		if ( $this->poster && ! $image_id ) {
-			$image_id = absint( get_term_meta( $terms[0]->term_id, Taxonomies::TERM_IMAGE, true ) );
+			$image_id = absint( get_term_meta( $term->term_id, Taxonomies::TERM_IMAGE, true ) );
 		}
 
 		return $image_id ? array( 'id' => $image_id, 'url' => wp_get_attachment_url( $image_id ) ) : array();
